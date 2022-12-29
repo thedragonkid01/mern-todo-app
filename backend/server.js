@@ -6,6 +6,7 @@ const db = require("./config/db");
 const { errorHandler } = require("./middlewares/errorHandler");
 
 const todoRoute = require("./routes/todoRoute");
+const userRoute = require("./routes/userRoute");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/api/todos", todoRoute);
+app.use("/api/users", userRoute);
 
 // Error Handler Middleware
 app.use(errorHandler);
