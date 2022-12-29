@@ -5,14 +5,14 @@ class TodoController {
   // @URI:      api/todos
   // @Method:   GET
   getAll = asyncHandler(async (req, res) => {
-    const todos = await Todo.find({});
+    const todos = await Todo.find({ user: req.user._id });
     res.json(todos);
   });
 
   // @URI:      api/todos/:id
   // @Method:   GET
   getById = asyncHandler(async (req, res) => {
-    const todo = await Todo.findById(req.params.id);
+    const todo = await Todo.findOne({ id: req.params.id, user: req.user._id });
 
     if (!todo) {
       res.status(400);
@@ -35,6 +35,7 @@ class TodoController {
     const todo = await Todo.create({
       ...req.body,
       status: "new",
+      user: req.user._id,
     });
     res.json(todo);
   });
@@ -49,9 +50,13 @@ class TodoController {
     }
 
     // Update
-    const todoUpdated = await Todo.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const todoUpdated = await Todo.findOneAndUpdate(
+      { id: req.params.id, user: req.user._id },
+      req.body,
+      {
+        new: true,
+      }
+    );
 
     if (!todoUpdated) {
       res.status(400);
@@ -64,7 +69,10 @@ class TodoController {
   // @URI:      api/todos/:id
   // @Method:   DELETE
   delete = asyncHandler(async (req, res) => {
-    const todoDeleted = await Todo.findByIdAndDelete(req.params.id);
+    const todoDeleted = await Todo.findOneAndDelete({
+      id: req.params.id,
+      user: req.user._id,
+    });
 
     if (!todoDeleted) {
       res.status(400);

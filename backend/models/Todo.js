@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const TodoSchema = new Schema(
   {
+    user: { type: Schema.Types.ObjectId, required: true },
     title: { type: String, required: true },
     description: { type: String },
     status: { type: String, require: true },
