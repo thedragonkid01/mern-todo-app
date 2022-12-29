@@ -1,33 +1,78 @@
+const asyncHandler = require("express-async-handler");
+const Todo = require("../models/Todo");
+
 class TodoController {
   // @URI:      api/todos
   // @Method:   GET
-  getAll = (req, res) => {
-    res.json({ message: "Controller -> Get All" });
-  };
+  getAll = asyncHandler(async (req, res) => {
+    const todos = await Todo.find({});
+    res.json(todos);
+  });
 
   // @URI:      api/todos/:id
   // @Method:   GET
-  getById = (req, res) => {
-    res.json({ message: "Controller -> Get By Id", id: req.params.id });
-  };
+  getById = asyncHandler(async (req, res) => {
+    const todo = await Todo.findById(req.params.id);
+
+    if (!todo) {
+      res.status(400);
+      throw new Error("Unable to find data");
+    }
+
+    res.json(todo);
+  });
 
   // @URI:      api/todos
   // @Method:   POST
-  create = (req, res) => {
-    res.json({ message: "Controller -> Post" });
-  };
+  create = asyncHandler(async (req, res) => {
+    // Validation
+    if (!req.body.title) {
+      res.status(400);
+      throw new Error("Please input title");
+    }
+
+    // Create
+    const todo = await Todo.create({
+      ...req.body,
+      status: "new",
+    });
+    res.json(todo);
+  });
 
   // @URI:      api/todos/:id
   // @Method:   PUT
-  update = (req, res) => {
-    res.json({ message: "Controller -> Put" });
-  };
+  update = asyncHandler(async (req, res) => {
+    // Validation
+    if (!req.body.title) {
+      res.status(400);
+      throw new Error("Please input title");
+    }
+
+    // Update
+    const todoUpdated = await Todo.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+
+    if (!todoUpdated) {
+      res.status(400);
+      throw new Error("Bad request");
+    }
+
+    res.json(todoUpdated);
+  });
 
   // @URI:      api/todos/:id
   // @Method:   DELETE
-  delete = (req, res) => {
-    res.json({ message: "Controller -> Delete" });
-  };
+  delete = asyncHandler(async (req, res) => {
+    const todoDeleted = await Todo.findByIdAndDelete(req.params.id);
+
+    if (!todoDeleted) {
+      res.status(400);
+      throw new Error("Bad request");
+    }
+
+    res.json({ _id: req.params.id });
+  });
 }
 
 module.exports = new TodoController();
