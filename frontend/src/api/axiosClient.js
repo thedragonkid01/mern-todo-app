@@ -10,6 +10,11 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
   function (config) {
     // Do something before request is sent
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.token) {
+      config.headers.authorization = `Bearer ${user.token}`;
+    }
+
     return config;
   },
   function (error) {

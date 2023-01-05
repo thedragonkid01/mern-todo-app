@@ -1,9 +1,9 @@
-import RegisterForm from "../../components/RegisterForm";
-import { useDispatch, useSelector } from "react-redux";
-import { reset, register } from "../../app/slices/authSlice";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { register, reset } from "../../app/slices/authSlice";
+import RegisterForm from "../../components/RegisterForm";
 
 function Register(props) {
   const navigate = useNavigate();
@@ -25,7 +25,6 @@ function Register(props) {
   }, [isError, isSuccess, user, dispatch, message, navigate]);
 
   const handleFormSubmit = (formData) => {
-    console.log("submit", formData);
     const userData = { ...formData };
     dispatch(register(userData));
   };

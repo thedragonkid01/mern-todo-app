@@ -1,14 +1,16 @@
 import axiosClient from "./axiosClient";
 
 const register = async (data) => {
-  const responseData = axiosClient.post("/api/users/register", data);
-  if (responseData) {
-  }
-  return responseData;
+  return await axiosClient.post("/api/users/register", data);
+};
+
+const login = async (data) => {
+  return await axiosClient.post("/api/users/login", data);
 };
 
 const userApi = {
   register,
+  login,
 };
 
 export default userApi;

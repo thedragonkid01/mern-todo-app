@@ -3,20 +3,22 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-LoginForm.propTypes = {
+RegisterForm.propTypes = {
   onFormSubmit: PropTypes.func,
 };
 
-LoginForm.defaultProps = {
+RegisterForm.defaultProps = {
   onFormSubmit: null,
 };
 
-function LoginForm({ onFormSubmit }) {
+function RegisterForm({ onFormSubmit }) {
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
+    retypePassword: "",
   });
-  const { email, password } = formData;
+  const { name, email, password, retypePassword } = formData;
 
   const handleOnChange = (e) => {
     e.preventDefault();
@@ -30,14 +32,19 @@ function LoginForm({ onFormSubmit }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!email || !password) {
+    if (!name || !email || !password || !retypePassword) {
       toast.error("Please input mandatory field(s)");
+      return;
+    }
+    if (password !== retypePassword) {
+      toast.error("Retype password should same password");
       return;
     }
 
     if (!onFormSubmit) return;
 
     onFormSubmit({
+      name,
       email,
       password,
     });
@@ -45,6 +52,15 @@ function LoginForm({ onFormSubmit }) {
 
   return (
     <form onSubmit={handleSubmit}>
+      <div className="mb-3">
+        <label className="form-label">Fullname</label>
+        <input
+          className="form-control"
+          name="name"
+          value={name}
+          onChange={handleOnChange}
+        ></input>
+      </div>
       <div className="mb-3">
         <label className="form-label">Email</label>
         <input
@@ -65,13 +81,23 @@ function LoginForm({ onFormSubmit }) {
           onChange={handleOnChange}
         ></input>
       </div>
+      <div className="mb-3">
+        <label className="form-label">Retype Password</label>
+        <input
+          type="password"
+          className="form-control"
+          name="retypePassword"
+          value={retypePassword}
+          onChange={handleOnChange}
+        ></input>
+      </div>
       <div className="d-grid gap-1">
         <button className="btn btn-primary" type="submit">
-          Login
+          Register
         </button>
       </div>
     </form>
   );
 }
 
-export default LoginForm;
+export default RegisterForm;
